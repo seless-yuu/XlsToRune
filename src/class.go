@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"path"
 	"strconv"
 )
 
@@ -30,10 +29,10 @@ func outputSheet(sheet RuneTypeSheet, file_name string, json_path string, out_di
 
 func outputTable(table RuneTypeTable, file_name string, json_path string, out_dir string) error {
 	class_name := file_name + "_" + table.Name
-	json_dir := path.Dir(json_path)
 
 	class_str := "using System;\n"
 	class_str += "using UnityEngine;\n"
+	class_str += "using UnityEngine.Assertions;\n"
 	class_str += "using UnityEngine.AddressableAssets;\n"
 	class_str += "using UnityEngine.ResourceManagement.AsyncOperations;\n"
 	class_str += "using RuneImporter;\n"
@@ -82,9 +81,10 @@ func outputTable(table RuneTypeTable, file_name string, json_path string, out_di
 
 	class_str += "\n"
 	class_str += "    public static AsyncOperationHandle LoadInstanceAsync() {\n"
-	class_str += "        var src_dir = \"" + json_dir + "/\";\n"
-	class_str += "        var out_dir = string.IsNullOrEmpty(Config.ScriptableObjectDirectory) ? src_dir : Config.ScriptableObjectDirectory;\n"
-	class_str += "        var asset_name = \"" + table.Name + ".asset\";\n"
+	class_str += "        Assert.IsFalse(string.IsNullOrEmpty(Config.ScriptableObjectDirectory), \"Config.ScriptableObjectDirectoryにAddressableディレクトリパスを設定してください\");\n"
+	class_str += "        \n"
+	class_str += "        var out_dir = Config.ScriptableObjectDirectory;\n"
+	class_str += "        var asset_name = \"" + file_name + "_" + table.Name + ".asset\";\n"
 	class_str += "        var path = out_dir + asset_name;\n"
 	class_str += "        var handle = Config.OnLoad(path);\n"
 	class_str += "        handle.Completed += (handle) => { instance = handle.Result as " + class_name + "; };\n"
@@ -96,7 +96,7 @@ func outputTable(table RuneTypeTable, file_name string, json_path string, out_di
 	class_str += "\n"
 	class_str += "}\n"
 
-	out_file_name := "Rune_" + file_name + "_" + table.Name
+	out_file_name := file_name + "_" + table.Name
 	return write(out_file_name, class_str, out_dir)
 }
 

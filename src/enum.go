@@ -27,7 +27,7 @@ func outputEnumFromTable(table RuneTypeTable, enum_ns string, out_dir string) er
 	}
 
 	enum_name := table.Name
-	path := out_dir + "/" + "eRune_" + enum_ns + "_" + enum_name + ".cs"
+	path := out_dir + "/" + "e" + enum_ns + "_" + enum_name + ".cs"
 
 	enum_str := ""
 
