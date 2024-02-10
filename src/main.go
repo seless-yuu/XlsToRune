@@ -68,7 +68,7 @@ func mainImpl() error {
 		return err
 	}
 
-	err = OutputEnum(book, *setting.penumNS, *setting.poutEnum)
+	err = OutputEnum(book, *setting.poutEnum)
 	if err != nil {
 		return err
 	}

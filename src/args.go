@@ -17,7 +17,6 @@ type SettingParam struct {
 	pout      *string
 	poutClass *string
 	poutEnum  *string
-	penumNS   *string
 }
 
 func ParseArgs() SettingParam {
@@ -30,7 +29,6 @@ func ParseArgs() SettingParam {
 
 	result.poutClass = flag.String("class", "", "クラス出力ディレクトリ")
 	result.poutEnum = flag.String("enum", "", "enum出力ディレクトリ")
-	result.penumNS = flag.String("enum-namespace", "", "enumのnamespace")
 
 	flag.Parse()
 
@@ -56,7 +54,6 @@ func (c *SettingParam) Print() {
 	fmt.Printf("output         : %s\n", *c.pout)
 	fmt.Printf("class          : %s\n", *c.poutClass)
 	fmt.Printf("enum           : %s\n", *c.poutEnum)
-	fmt.Printf("enum-namespace : %s\n", *c.penumNS)
 }
 
 func makeOutputDefaultPath(input_path string) string {

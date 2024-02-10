@@ -2,10 +2,10 @@ package main
 
 import "os"
 
-func OutputEnum(book RuneTypeBook, enum_ns string, out_dir string) error {
+func OutputEnum(book RuneTypeBook, out_dir string) error {
 	for _, sheet := range book.Sheets {
 		for _, table := range sheet.Tables {
-			outputEnumFromTable(table, enum_ns, out_dir)
+			outputEnumFromTable(table, book.Name, out_dir)
 		}
 	}
 
@@ -26,10 +26,13 @@ func outputEnumFromTable(table RuneTypeTable, enum_ns string, out_dir string) er
 		return nil
 	}
 
-	enum_name := "e" + table.Name
-	path := out_dir + "/" + enum_name + ".cs"
+	enum_name := table.Name
+	path := out_dir + "/" + "eRune_" + enum_ns + "_" + enum_name + ".cs"
 
 	enum_str := ""
+
+	enum_str += "namespace Rune\n"
+	enum_str += "{\n\n"
 
 	if len(enum_ns) > 0 {
 		enum_str += "namespace " + enum_ns + "\n"
@@ -53,6 +56,8 @@ func outputEnumFromTable(table RuneTypeTable, enum_ns string, out_dir string) er
 		enum_str += "\n"
 		enum_str += "}\n"
 	}
+
+	enum_str += "}\n"
 
 	err := os.MkdirAll(out_dir, os.ModePerm)
 	if err != nil {
