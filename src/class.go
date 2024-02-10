@@ -8,7 +8,7 @@ import (
 
 func OutputClassString(book RuneTypeBook, json_path string, out_dir string) error {
 	for _, sheet := range book.Sheets {
-		err := outputSheet(sheet, json_path, out_dir)
+		err := outputSheet(sheet, json_path, book.Name, out_dir)
 		if err != nil {
 			return err
 		}
@@ -17,9 +17,9 @@ func OutputClassString(book RuneTypeBook, json_path string, out_dir string) erro
 	return nil
 }
 
-func outputSheet(sheet RuneTypeSheet, json_path string, out_dir string) error {
+func outputSheet(sheet RuneTypeSheet, file_name string, json_path string, out_dir string) error {
 	for _, table := range sheet.Tables {
-		err := outputTable(table, json_path, out_dir)
+		err := outputTable(table, json_path, file_name, out_dir)
 		if err != nil {
 			return err
 		}
@@ -28,8 +28,8 @@ func outputSheet(sheet RuneTypeSheet, json_path string, out_dir string) error {
 	return nil
 }
 
-func outputTable(table RuneTypeTable, json_path string, out_dir string) error {
-	class_name := "Rune_" + table.Name
+func outputTable(table RuneTypeTable, file_name string, json_path string, out_dir string) error {
+	class_name := file_name + "_" + table.Name
 	json_dir := path.Dir(json_path)
 
 	class_str := "using System;\n"
@@ -45,10 +45,14 @@ func outputTable(table RuneTypeTable, json_path string, out_dir string) error {
 	class_str += "    {\n"
 	class_str += "        public static AsyncOperationHandle " + class_name + "_LoadInstanceAsync()\n"
 	class_str += "        {\n"
-	class_str += "            return " + class_name + ".LoadInstanceAsync();\n"
+	class_str += "            return " + "Rune." + class_name + ".LoadInstanceAsync();\n"
 	class_str += "        }\n"
 	class_str += "    }\n"
 	class_str += "}\n"
+	class_str += "\n"
+
+	class_str += "namespace Rune\n"
+	class_str += "{\n"
 	class_str += "\n"
 
 	class_str += addRuneClassName(class_name, len(table.Values))
@@ -89,9 +93,11 @@ func outputTable(table RuneTypeTable, json_path string, out_dir string) error {
 	class_str += "    }\n"
 
 	class_str += "}\n"
+	class_str += "\n"
+	class_str += "}\n"
 
-	file_name := "Rune_" + table.Name
-	return write(file_name, class_str, out_dir)
+	out_file_name := "Rune_" + file_name + "_" + table.Name
+	return write(out_file_name, class_str, out_dir)
 }
 
 func write(class_name string, class_str string, out_dir string) error {
